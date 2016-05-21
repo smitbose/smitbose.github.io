@@ -1,0 +1,13 @@
+---
+layout: post
+title: Week-1@IIT-Kharagpur
+date: 2016-05-20 23:28:00 +0530
+categories: internship blog
+---
+This post is about my summer internship in Complex Networks and Research Group at IIT, Kharagpur. As you can guess from the name, this is the first in a series of posts. I'll try to document whatever new technologies or theories I come across and some experiences in general.
+
+First, about the thing I'm doing, Large Scale Iterative Graph processing using [Apache Giraph](http://giraph.apache.org). Apache Giraph works on top of [Apache Hadoop](http://hadoop.apache.org), and uses the Hadoop Distributed File System(hdfs). My assignment for the week was to get familiar with [Bulk Sychronous Parallel(BSP)](https://en.wikipedia.org/wiki/Bulk_synchronous_parallel) and understand the implementation of [PageRank](https://en.wikipedia.org/wiki/PageRank). Giraph is based on Pregel, that was developed by Google.
+
+Overall, the week was not much challenging as far as work is concerned, but was a fun learning experience. However, I have realised a fact, that if I do have to curse something, then the first thing will be proxy servers. It took me an extra day to build Giraph on the server that I'm working on, although I had previously done it successfully on my machine previously. Due to my inexperience with the maven build system, I did not have an idea that maven does not automatically take system proxy, and have to configured seperately for working with a proxy server. Once I added a "settings.xml" under ~/.m2, everything was working fine. 
+
+Apart from that it was mostly going through APIs and reading paper and yes, a hell lot of cycling. Looking forward to the coming weeks!  
