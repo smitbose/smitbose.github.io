@@ -8,5 +8,22 @@ So back with the second week experiences. Phew!!! A week that was.
 
 Continuing last week's works, I had to study the Giraph API, to write my own programs following the BSP model. I executed Pagerank on Giraph, on two datasets taken from [SNAP](https://snap.stanford.edu/). The first one was a [Theoretical Physics collaboration dataset](https://snap.stanford.edu/data/cit-HepTh.html) and the second one was the [Email communication network of Enron](https://snap.stanford.edu/data/email-Enron.html), just to note how Giraph scales for large graphs. Also, I have made my ways through the Maven Build System, after starting from absolute 0 last week. Since I had a hard time googling a lot, I have thought of writing something about the Giraph API, to help people starters in Graph analytics, like me!
 
+The first key thing to implement your own algorithm in Giraph is to "think like a vertex". All graph algorithms are inherently iterative. So Giraph assumes the algorithm to progress in "supersteps"(following the BSP model). In each supersteps, the messages sent to it during the previous superstep are available to it, using which it can perform local computation, and then send the results as messages to other vertices. Accordingly, we have the following classes of interest:
  
+ *  [Vertex](https://giraph.apache.org/apidocs/org/apache/giraph/graph/Vertex.html) - this defines a vertex object in Giraph
+ *  [Edge](https://giraph.apache.org/apidocs/org/apache/giraph/edge/Edge.html) - this defines an edge in Giraph
+ *  [BasicComputation](https://giraph.apache.org/apidocs/org/apache/giraph/graph/BasicComputation.html) - this defines the computation that will be performed at each superstep.
+
+To write your implementation you will have to write a class that *extends* the **BasicComputation** class. Also, graphs in real life are used in several different contexts, based on which, our definition of *edge* and *vertex* varies. Thus, to create a meaningful definition of a *vertex* as per the context, we have to define our own class extending the **Vertex** class and an edge class extending the **Edge** class. Also note that these classes are templete classes. The template parameters allow us the flexibility to define the following things as per our requirement:
+
+ *  **Vertex index** - something to identify the vertex, and which is unique for every vertex. If we create a custom vertex index, it should *extend* [WritableComparable](https://hadoop.apache.org/docs/r2.6.1/api/org/apache/hadoop/io/WritableComparable.html).
+ *  **Vertex value** - the value we want the vertices to store, depending on which context are we trying to create a graph representation. A custom defined vertex value must *extend* [Writable](https://hadoop.apache.org/docs/r2.6.1/api/org/apache/hadoop/io/Writable.html)
+ *  **Edge value** - the value of the edge, which again depends on which context are we defining *linkage*. This must also *extend* the Writable class.
+
+Given the variety of contexts in which graphs are used in graph analytics starting from social to collaboration networks, computer networks, to even networks representing human interactions in say, an office environment, the flexibility that Giraph provides with its APIs, allow us to represent all such graphs.
+
+I'll keep it upto this, in this post, and will cover advanced topics like Master Computation and Aggregating values in future post. Also, I'll be talking about All Pair Shortest Path implementation using the BSP model of computation, followed by implementations of some standard Graph Analytic metrics.
+
+Four more weeks to go, to create an immemorable experience!
+
 
