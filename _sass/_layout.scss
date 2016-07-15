@@ -3,7 +3,7 @@
  */
 .site-header {
     border-top: 5px solid $grey-color-dark;
-    border-bottom: 1px solid $grey-color-light;
+    border-bottom: 1px solid RGBA(112, 179, 105, 0.22);
     min-height: 70px;
     text-align: center;
     // Positioning context for the mobile navigation icon
@@ -41,8 +41,12 @@
         &:not(:last-child) {
             margin-right: 20px;
         }
+        &:hover {
+            font-size: 18px;
+            font-weight: 550;
+            text-decoration: none;
+        }
     }
-
     @include media-query($on-palm) {
         position: absolute;
         top: 9px;
@@ -191,8 +195,17 @@
 }
 
 .post-link {
-    color: rgb(169,169,169);
-    text-decoration: underline;
+    font-weight: 800;
+    color: rgba(24,22,22,0.75);
+    &:visited
+    {
+        color: rgba(24, 22, 22, 0.75);
+    }
+    &:hover
+    {
+        color: rgba(24, 22, 22, 0.9);
+        text-decoration: none;
+    }    
     display: block;
     font-size: 24px;
     
