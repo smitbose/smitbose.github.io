@@ -1,0 +1,90 @@
+---
+layout: post
+title: "Version controlling with SVN"
+date: 2016-10-11 02:28 +0530 
+categories: tech post
+---
+
+I'm usually a git user, but recently I was forced to use SVN as part of a lab assignment. Firstly, I'll be discussing some basic aspects of 'Version controlling' and then the basic structure of svn-repositories. Once the concepts are understood, I'll write about the setup process.
+
+Version Controlling is required when maintaining a large project, where multiple developers are working simultaneously. Let us consider a minimal case, where there are two modules on which two developers are working, and one module invokes functions from another to get the job done. I'm not going into details of design principles and all. Let us call the devs A and B and the modules X and Y respectively. Whatever change A makes to X is important for B and accordingly B will make his changes to Y. There may be several cases where A may want to try out some experimental changes without affecting the stable version of X on which Y, on which b is working *depends*. Also, B while trying out his implementations should be aware of the changes A has made to X recently. We can extend this scenario to more developers and more modules. These situations motivate us to use Version Controlling softwares, of which SVN is just one example. 
+
+There are again two approaches to version control, *centralised* and *distributed*. SVN, falls in the former category, Git being an example of the later, which is more in use these days. The basic structure of a SVN repository contains 3 folders:
+
+* trunk
+* branches
+* tags
+
+The trunk repository contains the codes, the branches repository contains the branches, and the tags repository contains the tags to mark checkpoints over the development period. The word branches and tags are still vague, but I'll come to them. But first let us discuss the basic setup of svn. 
+
+This requires the installation of Apache HTTP server. I wont go into details of this as it varies from distro to distro. For the people using Arch Linux, its as simple as `sudo pacman -S apache`. Next in the configuration file\(/etc/httpd/conf/httpd.conf in Arch Linux\) change the DocumentRoot to svn repository folder. Let this be */home/svn/repositories*. Also dont forget to change the directory following the DocumentRoot line to /home/svn. Next, it is recommended to go for SSL. Just write these line.
+
+    # cd /etc/httpd/conf/
+    # openssl req -new -x509 -keyout server.key -out server.crt -days 365 -nodes
+
+Now add these line to `/etc/httpd/conf/extra/httpd-ssl.conf`, and include it in a VirtualHost directive.
+
+    <Location /svn>
+       DAV svn
+       SVNParentPath /home/svn/repositories
+       AuthzSVNAccessFile /home/svn/.svn-policy-file
+       AuthName "SVN Repositories"
+       AuthType Basic
+       AuthUserFile /home/svn/.svn-auth-file
+       Require valid-user
+    </Location>
+
+Uncomment the following line in `/etc/httpd/conf/httpd.conf` in case they are commented out:
+
+    LoadModule ssl_module modules/mod_ssl.so
+    LoadModule socache_shmcb_module modules/mod_socache_shmcb.so
+    Include /etc/httpd/conf/extra/httpd-ssl.conf 
+
+We have to now create two files under the /home/svn directory. The first of them, .svn-policy-file, determines the priviledges given to users. The policy file will contain:
+
+    [/]
+    * = r
+    
+    [REPO_NAME:/]
+    USER_NAME = rw
+
+Replace the user name and repo name for the repos and users which you are dealing with. We initially define a read access for anon users. Any access to the repo REPO_NAME will require username/password, and any user other than USER_NAME will not be granted access. Now the .svn-auth-file. Create it by executing the command:
+
+    # htpasswd -cs /home/svn/.svn-auth-file USER_NAME
+
+So far, the setup phase is complete. Now it's the duty of the admin to create a repository using: `svnadmin create` command followed by the path to the repo. It should be made sure that the user and user group is *http* using the `chown` command. This is the point where we come the different SVN operations:
+
+* import
+* checkout
+* update
+* add
+* commit
+* view changes
+
+The import will be created when the project structure is created. We have to create a directory say *svn-import* with folders branches tags and trunk as mentioned earlier, with the codes in the trunk. We add the code under version control by the command:
+
+    svn import -m "Intial import" <repo name> <address of the server> 
+
+All the devs who want to have a **working copy** of the codebase, and has permission to access it, will fetch it into his system from the server by the command:
+
+    svn checkout <Server address> <folder to store>
+
+With this each of them can start working on their own and when they will make any changes or add a new, they'll have to make sure the change is tracked by SVN, using the command: 
+
+    svn add <filename>
+
+And when the necessary changes are added to the pending changelist, we should commit our changes, creating a stable checkpoint in the development process. This is done by: 
+
+    svn commit -m "<some meaningful message conveying the purpose of the changes>" 
+
+To get a list of files that are not tracked we can use:
+
+    svn status
+
+Note: if there are no uncommitedd changes, the command will display nothing, i.e. right after svn commit, we will see no output.
+
+We can use command 'svn log' to review the changes made to the codebase over its entire lifetime. The command 'svn diff' shows the changes made since the last *commit*. Now suppose developer A has already done all these things while B needs to get updated with the changes, i.e. the commits made by A to the codebase. Its as simple as 'svn update' for him. At any point, before a commit is made, the command 'svn rever <filename>' will revert all changes made to file since the last commit. This is one of the benefits of version controlling, where we can always get back to a **stable versions** of the codebase despite having made several changes that might crash the code. This is where we comes the utility of the **tags** directory. We can give a meaningful name to a particular *version* of the code. Let us consider the third revision adds the basic mathematical operations our API, that we are to make will be using. So we use the command:
+
+    svn copy --revision=4 trunk/ tags/basic_mathematical_operations
+
+ 
