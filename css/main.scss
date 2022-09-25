@@ -16,7 +16,7 @@ $base-line-height: 1.5;
 $spacing-unit:     30px;
 
 $text-color:       RGBA(17, 17, 17, 0.92);
-$background-color: #e3e3d3;
+$background-color: #ffffff;
 $brand-color:      #2a7ae2;
 
 $grey-color:       #828282;
@@ -24,10 +24,10 @@ $grey-color-light: lighten($grey-color, 40%);
 $grey-color-dark:  darken($grey-color, 25%);
 
 // Width of the content area
-$content-width:    800px;
+$content-width:    100%;
 
 $on-palm:          600px;
-$on-laptop:        800px;
+$on-laptop:        100%;
 
 
 
@@ -50,5 +50,6 @@ $on-laptop:        800px;
 @import
         "base",
         "layout",
-        "syntax-highlighting"
+        "syntax-highlighting",
+        "home"
 ;

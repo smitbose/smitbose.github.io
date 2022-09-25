@@ -1,30 +1,20 @@
 ---
 layout: default
-title: Blog
+title: Home
+order: 1
 ---
 
 <div class="home">
 
     <!--<h1 class="page-heading">Posts</h1>-->
+    <div class="overview-block">
+      <div class="overview-blogs">
+        Placeholder
+      </div>
+      <div class="overview-about">
+        Placeholder
+      </div>
+    </div>
 
-  <ul class="post-list">
-    {% for post in site.posts %}
-      <li>
-        
-        <h2>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-        <br/>
-        
-        {{ post.content | strip_html | truncatewords: 30 }}
-        <br/>
-        <br/>
-        <a href="{{ post.url | prepend: site.baseurl  }}">Continue Reading..</a>
-      </li>
-    {% endfor %}
-  </ul>
-
-  <!--<p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>-->
-
+  
 </div>
